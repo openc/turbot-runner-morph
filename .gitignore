@@ -1,0 +1,12 @@
+/.bundle
+/.rvmrc
+/coverage
+/pkg
+/rdoc
+/tags
+/vendor
+/.rbenv-version
+*~
+.#*
+#*#
+/spec/bots/*/output
