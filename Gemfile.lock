@@ -1,13 +1,13 @@
 PATH
   remote: .
   specs:
-    turbot-runner-morph (0.0.1)
+    turbot-runner-morph (0.0.2)
       openc-json_schema (= 0.0.13)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.3.7)
+    addressable (2.3.8)
     coderay (1.1.0)
     columnize (0.8.9)
     debugger (1.6.8)
