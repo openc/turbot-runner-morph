@@ -4,6 +4,10 @@ require 'pathname'
 
 module TurbotRunner
   class Runner
+     RC_OK = 0
+     RC_SCRAPER_FAILED = 1
+     RC_TRANSFORMER_FAILED = 2
+
     attr_reader :base_directory
 
     def initialize(directory, options={})
@@ -19,29 +23,47 @@ module TurbotRunner
       else
         @output_directory = File.join(@base_directory, 'output')
       end
+       @scraper_provided = options[:scraper_provided]
     end
 
     def run
       set_up_output_directory
 
-      succeeded = run_script(scraper_config)
-      # Run the transformers even if the scraper fails
-      transformers.each do |transformer_config|
-        succeeded = run_script(
-          transformer_config.merge(:base_directory => @base_directory),
-          input_file=scraper_output_file) && succeeded
+      if @scraper_provided
+        scraper_succeeded = true
+      else
+        scraper_succeeded = run_script(scraper_config)
       end
-      succeeded
+
+      # Run the transformers even if the scraper fails
+      transformers_succeeded = true
+      transformers.each do |transformer_config|
+        config = transformer_config.merge(
+          :base_directory => @base_directory,
+        )
+        transformers_succeeded = run_script(config, input_file=scraper_output_file) && transformers_succeeded
+      end
+
+      if !scraper_succeeded
+        RC_SCRAPER_FAILED
+      elsif !transformers_succeeded
+        RC_TRANSFORMER_FAILED
+      else
+        RC_OK
+      end
     end
 
     def set_up_output_directory
       FileUtils.mkdir_p(@output_directory)
-      FileUtils.rm_f(File.join(@output_directory, 'scraper.out'))
-      FileUtils.rm_f(File.join(@output_directory, 'scraper.err'))
+
+      if !@scraper_provided
+        FileUtils.rm_f(output_file('scraper', '.out'))
+        FileUtils.rm_f(output_file('scraper', '.err'))
+      end
 
       transformers.each do |transformer_config|
-        FileUtils.rm_f(File.join(@output_directory, "#{transformer_config[:file]}.out"))
-        FileUtils.rm_f(File.join(@output_directory, "#{transformer_config[:file]}.err"))
+        FileUtils.rm_f(output_file(transformer_config[:file], '.out'))
+        FileUtils.rm_f(output_file(transformer_config[:file], '.err'))
       end
     end
 
