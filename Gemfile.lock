@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    turbot-runner-morph (0.0.7)
+    turbot-runner-morph (0.0.8)
       openc-json_schema (= 0.0.13)
 
 GEM
@@ -41,3 +41,6 @@ DEPENDENCIES
   rspec (>= 3.0)
   rspec-mocks (>= 3.0)
   turbot-runner-morph!
+
+BUNDLED WITH
+   1.10.6
