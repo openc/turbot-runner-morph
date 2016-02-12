@@ -1,9 +1,20 @@
-require 'turbot_runner'
+require 'rubygems'
+
+require 'simplecov'
+require 'coveralls'
+SimpleCov.formatter = Coveralls::SimpleCov::Formatter
+SimpleCov.start do
+  add_filter 'spec'
+end
+
+require 'rspec'
+
+require File.dirname(__FILE__) + '/../lib/turbot_runner'
 
 RSpec::Matchers.define(:fail_validation_with) do |expected_error|
   match do |record|
     identifying_fields = ['number']
-    @error = TurbotRunner::Validator.validate('primary-data', record, identifying_fields)
+    @error = TurbotRunner::Validator.validate('primary-data', record, identifying_fields) #, Set.new)
     expect(@error).to eq(expected_error)
   end
 
@@ -15,6 +26,6 @@ end
 RSpec::Matchers.define(:be_valid) do
   match do |record|
     identifying_fields = ['number']
-    expect(TurbotRunner::Validator.validate('primary-data', record, identifying_fields)).to eq(nil)
+    expect(TurbotRunner::Validator.validate('primary-data', record, identifying_fields)).to eq(nil) #, Set.new)
   end
 end

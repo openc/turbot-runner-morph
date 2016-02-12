@@ -173,7 +173,7 @@ describe TurbotRunner::Runner do
     context 'with a handler that interrupts the runner' do
       before do
         class Handler < TurbotRunner::BaseHandler
-          def initialize(*)
+          def initialize
             @count = 0
             super
           end
@@ -249,13 +249,34 @@ describe TurbotRunner::Runner do
       end
     end
 
+    # context 'with a bot that produces duplicate data' do
+    #   before do
+    #     @runner = test_runner('bot-that-produces-duplicates')
+    #   end
+
+    #   it 'raises returns false' do
+    #     expect(@runner).to fail_in_scraper
+    #   end
+    # end
+
+    # context 'with a bot that is expected to produce duplicate data' do
+    #   before do
+    #     @runner = test_runner('bot-that-is-allowed-to-produce-duplicates')
+    #   end
+
+    #   it 'raises returns false' do
+    #     expect(@runner).to succeed
+    #   end
+    # end
+
     context 'when the scraped data is provided' do
       before do
+        @runner = test_runner('bot-with-transformer', :scraper_provided => true)
+        @runner.set_up_output_directory
         FileUtils.cp(
           File.join('spec', 'outputs', 'full-scraper.out'),
           File.join(File.dirname(__FILE__), '../bots', 'bot-with-transformer', 'output', 'scraper.out')
         )
-        @runner = test_runner('bot-with-transformer', :scraper_provided => true)
       end
 
       it 'does not run scraper' do
@@ -281,8 +302,8 @@ describe TurbotRunner::Runner do
       class Handler < TurbotRunner::BaseHandler
         attr_reader :records_seen
 
-        def initialize(*)
-          @records_seen = Hash.new {|h, k| h[k] = 0}
+        def initialize
+          @records_seen = Hash.new(0)
           super
         end
 
@@ -309,7 +330,7 @@ describe TurbotRunner::Runner do
     it 'can cope when scraper has failed immediately' do
       test_runner('bot-that-crashes-immediately').run
 
-      runner = test_runner('bot-with-transformer',
+      runner = test_runner('bot-that-crashes-immediately',
         :record_handler => @handler
       )
 
@@ -323,15 +344,19 @@ describe TurbotRunner::Runner do
     end
 
     it 'clears existing output' do
+      @runner.set_up_output_directory
       path = File.join(@runner.base_directory, 'output', 'scraper.out')
       FileUtils.touch(path)
+
       @runner.set_up_output_directory
       expect(File.exist?(path)).to be(false)
     end
 
     it 'does not clear existing files that are not output files' do
+      @runner.set_up_output_directory
       path = File.join(@runner.base_directory, 'output', 'stdout')
       FileUtils.touch(path)
+
       @runner.set_up_output_directory
       expect(File.exist?(path)).to be(true)
     end

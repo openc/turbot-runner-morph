@@ -4,9 +4,9 @@ require 'pathname'
 
 module TurbotRunner
   class Runner
-     RC_OK = 0
-     RC_SCRAPER_FAILED = 1
-     RC_TRANSFORMER_FAILED = 2
+    RC_OK = 0
+    RC_SCRAPER_FAILED = 1
+    RC_TRANSFORMER_FAILED = 2
 
     attr_reader :base_directory
 
@@ -17,13 +17,13 @@ module TurbotRunner
       @record_handler = options[:record_handler]
       @log_to_file = options[:log_to_file]
       @timeout = options[:timeout]
+      @scraper_provided = options[:scraper_provided]
       if options[:output_directory]
         assert_absolute_path(options[:output_directory])
         @output_directory = options[:output_directory]
       else
         @output_directory = File.join(@base_directory, 'output')
       end
-       @scraper_provided = options[:scraper_provided]
     end
 
     def run
@@ -38,9 +38,10 @@ module TurbotRunner
       # Run the transformers even if the scraper fails
       transformers_succeeded = true
       transformers.each do |transformer_config|
-        config = transformer_config.merge(
+        config = transformer_config.merge({
           :base_directory => @base_directory,
-        )
+          # :duplicates_allowed => duplicates_allowed,
+        })
         transformers_succeeded = run_script(config, input_file=scraper_output_file) && transformers_succeeded
       end
 
@@ -164,7 +165,8 @@ module TurbotRunner
         :base_directory => @base_directory,
         :file => scraper_script,
         :data_type => scraper_data_type,
-        :identifying_fields => scraper_identifying_fields
+        :identifying_fields => scraper_identifying_fields,
+        # :duplicates_allowed => duplicates_allowed,
       }
     end
 
@@ -191,6 +193,10 @@ module TurbotRunner
     def scraper_identifying_fields
       @config[:identifying_fields]
     end
+
+    # def duplicates_allowed
+    #   @config[:duplicates_allowed]
+    # end
 
     def assert_absolute_path(path)
       unless Pathname.new(path).absolute?
