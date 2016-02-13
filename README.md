@@ -23,9 +23,9 @@ Bump the version in `lib/turbot_runner/version.rb` according to the [Semantic Ve
     git commit lib/turbot_runner/version.rb -m 'Release new version'
     rake release # requires Rubygems credentials
 
-In [morph](https://github.com/openc/morph), run:
+In [morph](https://github.com/sebbacon/morph), run:
 
     bundle update turbot-runner-morph
     git commit Gemfile.lock -m 'Bump turbot-runner-morph' && git push
 
-Finally, deploy [morph](https://github.com/sebbacon/morph/).
+Finally, deploy [morph](https://github.com/sebbacon/morph).
