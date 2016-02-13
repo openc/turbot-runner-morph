@@ -20,10 +20,14 @@ end
 RSpec::Matchers.define(:have_output) do |script, expected|
   match do |runner|
     expected_path = File.join('spec', 'outputs', expected)
-    expected_output = File.readlines(expected_path).map {|line| JSON.parse(line)}
+    @expected_output = File.readlines(expected_path).map {|line| JSON.parse(line)}
     actual_path = File.join(runner.base_directory, 'output', "#{script}.out")
-    actual_output = File.readlines(actual_path).map {|line| JSON.parse(line)}
-    expect(expected_output).to eq(actual_output)
+    @actual_output = File.readlines(actual_path).map {|line| JSON.parse(line)}
+    expect(@expected_output).to eq(@actual_output)
+  end
+
+  failure_message do |actual|
+    "Expected output to be #{@expected_output}, but was #{@actual_output}"
   end
 end
 
