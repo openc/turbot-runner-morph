@@ -26,6 +26,7 @@ Bump the version in `lib/turbot_runner/version.rb` according to the [Semantic Ve
 In [morph](https://github.com/sebbacon/morph), run:
 
     bundle update turbot-runner-morph
-    git commit Gemfile.lock -m 'Bump turbot-runner-morph' && git push
+    git commit Gemfile.lock -m 'Bump turbot-runner-morph'
+    git push
 
 Finally, deploy [morph](https://github.com/sebbacon/morph).
