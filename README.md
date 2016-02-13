@@ -28,4 +28,4 @@ In [morph](https://github.com/openc/morph), run:
     bundle update turbot-runner-morph
     git commit Gemfile.lock -m 'Bump turbot-runner-morph' && git push
 
-Finally, [rebuild the Docker image](https://github.com/openc/morph-docker-ruby#readme).
+Finally, deploy [morph](https://github.com/sebbacon/morph/).
