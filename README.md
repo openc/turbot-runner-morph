@@ -1,5 +1,7 @@
 # turbot-runner-morph
 
+## THIS IS NOW DEPRECATED! DON'T USE IT!
+
 [![Gem Version](https://badge.fury.io/rb/turbot-runner-morph.svg)](https://badge.fury.io/rb/turbot-runner-morph)
 [![Build Status](https://secure.travis-ci.org/openc/turbot-runner-morph.png)](https://travis-ci.org/openc/turbot-runner-morph)
 [![Dependency Status](https://gemnasium.com/openc/turbot-runner-morph.png)](https://gemnasium.com/openc/turbot-runner-morph)
